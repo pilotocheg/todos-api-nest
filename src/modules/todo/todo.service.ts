@@ -1,33 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Todo, TodoDocument } from './todo.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class TodoService {
+  constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
+
   createTodo(text: string) {
-    return text;
+    const newTodo = new this.todoModel({ text });
+    return newTodo.save();
   }
 
   getTodos() {
-    return [];
+    return this.todoModel.find().exec();
   }
 
   getTodo(id: string) {
-    return { id };
+    return this.getTodoFromDB(id);
   }
 
-  updateTodo(id: string, text: string) {
-    return { id, text };
+  async updateTodo(id: string, text: string) {
+    await this.getTodoFromDB(id);
+    return this.todoModel.updateOne({ id }, { text }).exec();
   }
 
   deleteTodo(id: string) {
     return id;
   }
 
-  // private findProduct(id: string) {
-  //   const productIndex = this.products.findIndex((p) => p.id === id);
-  //   const product = this.products[productIndex];
-  //   if (!product) {
-  //     throw new NotFoundException('Could not find the product');
-  //   }
-  //   return [product, productIndex] as [Product, number];
-  // }
+  private async getTodoFromDB(id: string) {
+    const todo = await this.todoModel.findById(id).exec();
+    if (!todo) {
+      throw new NotFoundException(`Todo with id "${id}" not found`);
+    }
+    return todo;
+  }
 }
