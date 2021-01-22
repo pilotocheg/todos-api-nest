@@ -20,9 +20,14 @@ export class TodoService {
     return this.getTodoFromDB(id);
   }
 
-  async updateTodo(id: string, text: string) {
+  async updateTodo(id: string, text: string, completed?: boolean) {
     await this.getTodoFromDB(id);
-    return this.todoModel.updateOne({ id }, { text }).exec();
+    return this.todoModel.updateOne({ id }, { text, completed }).exec();
+  }
+
+  async updateTodo(id: string, text: string, completed?: boolean) {
+    await this.getTodoFromDB(id);
+    return this.todoModel.updateOne({ id }, { text, completed }).exec();
   }
 
   deleteTodo(id: string) {
