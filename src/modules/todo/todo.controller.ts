@@ -8,15 +8,16 @@ import {
   Delete,
   HttpCode,
 } from '@nestjs/common';
+import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoService } from './todo.service';
 
-@Controller('Todos')
+@Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  addTodo(@Body('text') text: string) {
-    return this.todoService.createTodo(text);
+  addTodo(@Body() createTodoDto: CreateTodoDto) {
+    return this.todoService.createTodo(createTodoDto);
   }
 
   @Get()
