@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class DeleteManyDto {
-  @IsString()
-  @IsNotEmpty()
-  id: string;
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  ids: string[];
 }

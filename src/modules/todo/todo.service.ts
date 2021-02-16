@@ -9,7 +9,6 @@ import { Todo, TodoDocument } from './todo.schema';
 // Dto
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateManyDto } from './dto/update-many.dto';
-import { DeleteManyDto } from './dto/delete-many.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Injectable()
@@ -38,7 +37,6 @@ export class TodoService {
   }
 
   async updateMany({ items }: UpdateManyDto) {
-    console.log(items);
     return this.todoModel.bulkWrite(
       items.map(({ id, payload }) => ({
         updateOne: {
@@ -49,7 +47,7 @@ export class TodoService {
     );
   }
 
-  async deleteMany(ids: DeleteManyDto[]) {
+  async deleteMany(ids: string[]) {
     return this.todoModel.deleteMany({ _id: { $in: ids } });
   }
 

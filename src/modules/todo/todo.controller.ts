@@ -33,6 +33,16 @@ export class TodoController {
     return this.todoService.getTodos();
   }
 
+  @Patch('updateMany')
+  updateMany(@Body() updateData: UpdateManyDto) {
+    return this.todoService.updateMany(updateData);
+  }
+
+  @Delete('deleteMany')
+  deleteMany(@Body() { ids }: DeleteManyDto) {
+    return this.todoService.deleteMany(ids);
+  }
+
   @Get(':id')
   getTodo(@Param('id') id: string) {
     return this.todoService.getTodo(id);
@@ -47,15 +57,5 @@ export class TodoController {
   @HttpCode(204)
   deleteTodo(@Param('id') id: string) {
     return this.todoService.deleteTodo(id);
-  }
-
-  @Patch('updateMany')
-  updateMany(@Body() updateData: UpdateManyDto) {
-    return this.todoService.updateMany(updateData);
-  }
-
-  @Delete('deleteMany')
-  deleteMany(@Body() ids: DeleteManyDto[]) {
-    return this.todoService.deleteMany(ids);
   }
 }
