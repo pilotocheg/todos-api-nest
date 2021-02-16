@@ -1,40 +1,68 @@
+// Core
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+
+// Schema
 import { Todo, TodoDocument } from './todo.schema';
-import { Model } from 'mongoose';
+
+// Dto
 import { CreateTodoDto } from './dto/create-todo.dto';
+import { UpdateManyDto } from './dto/update-many.dto';
+import { DeleteManyDto } from './dto/delete-many.dto';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Injectable()
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
 
-  createTodo(createTodoDto: CreateTodoDto) {
-    const newTodo = new this.todoModel(createTodoDto);
-    return newTodo.save();
+  async createTodo(data: CreateTodoDto) {
+    const newTodoDocument = new this.todoModel(data);
+    const newTodo = await newTodoDocument.save();
+    return newTodo.toObject();
   }
 
-  getTodos() {
-    return this.todoModel.find().exec();
+  async getTodos() {
+    const docsList = await this.todoModel.find().exec();
+    return docsList.map((doc) => doc.toObject());
   }
 
-  getTodo(id: string) {
-    return this.getTodoFromDB(id);
+  async getTodo(id: string) {
+    const doc = await this.getTodoFromDB(id);
+    return doc.toObject();
   }
 
-  async updateTodo(id: string, text: string, completed?: boolean) {
-    await this.getTodoFromDB(id);
-    return this.todoModel.updateOne({ id }, { text, completed }).exec();
+  async updateTodo(id: string, data: UpdateTodoDto) {
+    const doc = await this.getTodoFromDB(id);
+    return doc.update(data);
   }
 
-  deleteTodo(id: string) {
-    return id;
+  async updateMany({ items }: UpdateManyDto) {
+    console.log(items);
+    return this.todoModel.bulkWrite(
+      items.map(({ id, payload }) => ({
+        updateOne: {
+          filter: { _id: Types.ObjectId(id) },
+          update: payload,
+        },
+      })),
+    );
+  }
+
+  async deleteMany(ids: DeleteManyDto[]) {
+    return this.todoModel.deleteMany({ _id: { $in: ids } });
+  }
+
+  async deleteTodo(id: string) {
+    const doc = await this.getTodoFromDB(id);
+    return doc.delete();
   }
 
   private async getTodoFromDB(id: string) {
-    const todo = await this.todoModel.findById(id).exec();
-    if (!todo) {
+    const todoDoc = await this.todoModel.findById(id).exec();
+    if (!todoDoc) {
       throw new NotFoundException(`Todo with id "${id}" not found`);
     }
-    return todo;
+    return todoDoc;
   }
 }

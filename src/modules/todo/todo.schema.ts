@@ -13,3 +13,12 @@ export class Todo {
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);
+
+TodoSchema.set('toObject', {
+  versionKey: false,
+  transform(_, item) {
+    item.id = String(item._id);
+    delete item._id;
+    return item;
+  },
+});

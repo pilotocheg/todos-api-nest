@@ -1,3 +1,4 @@
+// Core
 import {
   Body,
   Controller,
@@ -8,7 +9,14 @@ import {
   Delete,
   HttpCode,
 } from '@nestjs/common';
+
+// DTO
 import { CreateTodoDto } from './dto/create-todo.dto';
+import { DeleteManyDto } from './dto/delete-many.dto';
+import { UpdateManyDto } from './dto/update-many.dto';
+import { UpdateTodoDto } from './dto/update-todo.dto';
+
+// Service
 import { TodoService } from './todo.service';
 
 @Controller('todo')
@@ -31,13 +39,23 @@ export class TodoController {
   }
 
   @Patch(':id')
-  updateTodo(@Param('id') id: string, @Body('text') text: string) {
-    return this.todoService.updateTodo(id, text);
+  updateTodo(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+    return this.todoService.updateTodo(id, updateTodoDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
   deleteTodo(@Param('id') id: string) {
     return this.todoService.deleteTodo(id);
+  }
+
+  @Patch('updateMany')
+  updateMany(@Body() updateData: UpdateManyDto) {
+    return this.todoService.updateMany(updateData);
+  }
+
+  @Delete('deleteMany')
+  deleteMany(@Body() ids: DeleteManyDto[]) {
+    return this.todoService.deleteMany(ids);
   }
 }
