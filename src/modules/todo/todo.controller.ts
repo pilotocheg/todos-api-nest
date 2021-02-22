@@ -18,9 +18,9 @@ import {
 
 // DTO
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { DeleteManyDto } from './dto/delete-many.dto';
+import { DeleteManyTodoDto } from './dto/delete-many.dto';
 import { TodoDto } from './dto/todo.dto';
-import { UpdateManyDto } from './dto/update-many.dto';
+import { UpdateManyTodoDto } from './dto/update-many.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 
 // Service
@@ -49,14 +49,14 @@ export class TodoController {
 
   @ApiOperation({ description: 'Update many todo items at one transaction' })
   @Patch('updateMany')
-  updateMany(@Body() updateData: UpdateManyDto) {
+  updateMany(@Body() updateData: UpdateManyTodoDto) {
     return this.todoService.updateMany(updateData);
   }
 
   @ApiOperation({ description: 'Delete many todo items at one transaction' })
   @Delete('deleteMany')
   @HttpCode(204)
-  deleteMany(@Body() { ids }: DeleteManyDto) {
+  deleteMany(@Body() { ids }: DeleteManyTodoDto) {
     return this.todoService.deleteMany(ids);
   }
 

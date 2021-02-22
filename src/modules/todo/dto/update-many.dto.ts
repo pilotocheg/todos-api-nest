@@ -3,7 +3,7 @@ import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 import { UpdateTodoDto } from './update-todo.dto';
 
-export class UpdateItem {
+export class UpdateManyTodoItem {
   @IsString()
   @IsNotEmpty()
   id: string;
@@ -13,9 +13,9 @@ export class UpdateItem {
   payload: UpdateTodoDto;
 }
 
-export class UpdateManyDto {
+export class UpdateManyTodoDto {
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => UpdateItem)
-  items: UpdateItem[];
+  @Type(() => UpdateManyTodoItem)
+  items: UpdateManyTodoItem[];
 }

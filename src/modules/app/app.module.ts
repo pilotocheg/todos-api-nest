@@ -1,9 +1,15 @@
+// Core
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+// App module parts
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
+// Other modules
 import { TodoModule } from '../todo/todo.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -16,6 +22,7 @@ import { TodoModule } from '../todo/todo.module';
       }),
     }),
     TodoModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

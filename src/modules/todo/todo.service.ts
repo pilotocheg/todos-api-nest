@@ -8,7 +8,7 @@ import { Todo, TodoDocument } from './todo.schema';
 
 // Dto
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateManyDto } from './dto/update-many.dto';
+import { UpdateManyTodoDto } from './dto/update-many.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class TodoService {
     return doc.update(data);
   }
 
-  async updateMany({ items }: UpdateManyDto) {
+  async updateMany({ items }: UpdateManyTodoDto) {
     return this.todoModel.bulkWrite(
       items.map(({ id, payload }) => ({
         updateOne: {
